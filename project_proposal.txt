@@ -1,0 +1,1 @@
+We are going to examine the number of players over a two-year period to see the effect of Coronavirus and social distancing on the playerbase of Steam video games.  The datasets we are using will come from https://www.steamdb.info/, which tracks the number of players for each video game in the Steam database and concurrent Twitch viewership in every 10 minute period.  
