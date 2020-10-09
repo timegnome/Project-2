@@ -11,3 +11,12 @@ Platformer-James
 Partygame-Amy
 RPG-Ben
 Sports-Kirstie
+
+
+Get Data
+Gather More Data if needed 
+Compile and Organize
+Find Relationships if any
+Create AWS Database
+Create FLask APP
+Create Visualizations
