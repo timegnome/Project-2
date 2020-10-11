@@ -1,0 +1,54 @@
+UPDATE ark SET datetime=LEFT(datetime, -6);
+UPDATE assettocorsa SET datetime=LEFT(datetime, -6);
+UPDATE bdo SET datetime=LEFT(datetime, -6);
+UPDATE beatsaber SET datetime=LEFT(datetime, -6);
+UPDATE celeste SET datetime=LEFT(datetime, -6);
+UPDATE civ6 SET datetime=LEFT(datetime, -6);
+UPDATE conan SET datetime=LEFT(datetime, -6);
+UPDATE csgo SET datetime=LEFT(datetime, -6);
+UPDATE cuphead SET datetime=LEFT(datetime, -6);
+UPDATE deadcells SET datetime=LEFT(datetime, -6);
+
+UPDATE destiny2 SET datetime=LEFT(datetime, -6);
+UPDATE dirtrally SET datetime=LEFT(datetime, -6);
+UPDATE dota2 SET datetime=LEFT(datetime, -6);
+UPDATE efootballpes2020 SET datetime=LEFT(datetime, -6);
+UPDATE eso SET datetime=LEFT(datetime, -6);
+UPDATE factorio SET datetime=LEFT(datetime, -6);
+UPDATE ffxiv SET datetime=LEFT(datetime, -6);
+UPDATE fo4 SET datetime=LEFT(datetime, -6);
+UPDATE footballmanager2019 SET datetime=LEFT(datetime, -6);
+UPDATE footballmanager2020 SET datetime=LEFT(datetime, -6);
+
+UPDATE geometrydash SET datetime=LEFT(datetime, -6);
+UPDATE gettingoverit SET datetime=LEFT(datetime, -6);
+UPDATE gris SET datetime=LEFT(datetime, -6);
+UPDATE gta5 SET datetime=LEFT(datetime, -6);
+UPDATE heartsofiron SET datetime=LEFT(datetime, -6);
+UPDATE hollowknight SET datetime=LEFT(datetime, -6);
+UPDATE mhw SET datetime=LEFT(datetime, -6);
+UPDATE nba2k19 SET datetime=LEFT(datetime, -6);
+UPDATE pd2 SET datetime=LEFT(datetime, -6);
+UPDATE poe SET datetime=LEFT(datetime, -6);
+
+UPDATE portal2 SET datetime=LEFT(datetime, -6);
+UPDATE pubg SET datetime=LEFT(datetime, -6);
+UPDATE r6siege SET datetime=LEFT(datetime, -6);
+UPDATE raft SET datetime=LEFT(datetime, -6);
+UPDATE rimworld SET datetime=LEFT(datetime, -6);
+UPDATE rocketleague SET datetime=LEFT(datetime, -6);
+UPDATE russianfishing4 SET datetime=LEFT(datetime, -6);
+UPDATE rust SET datetime=LEFT(datetime, -6);
+UPDATE sevendtd SET datetime=LEFT(datetime, -6);
+UPDATE skyrim SET datetime=LEFT(datetime, -6);
+
+UPDATE smite SET datetime=LEFT(datetime, -6);
+UPDATE steep SET datetime=LEFT(datetime, -6);
+UPDATE tekken7 SET datetime=LEFT(datetime, -6);
+UPDATE terraria SET datetime=LEFT(datetime, -6);
+UPDATE tf2 SET datetime=LEFT(datetime, -6);
+UPDATE totalwarwarhammer SET datetime=LEFT(datetime, -6);
+UPDATE transformice SET datetime=LEFT(datetime, -6);
+UPDATE warframe SET datetime=LEFT(datetime, -6);
+UPDATE warthunder SET datetime=LEFT(datetime, -6);
+UPDATE witcher3 SET datetime=LEFT(datetime, -6);
