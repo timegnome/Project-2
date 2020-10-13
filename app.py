@@ -17,9 +17,10 @@ engine = create_engine(f'postgresql://{rds_connection_string}')
 # Route to render index.html template using data from Mongo
 @app.route("/<table>")
 def home(table):
-    return render_template('index.html')
+    return render_template('instuctions.html')
+
 @app.route("/<table>")
-def home(table):
+def tables(table):
     # Fetch the table from the postgres AWS database
     # Find one record of data from the mongo database
     # Setup a request to pull the data from the database 
@@ -34,8 +35,8 @@ def home(table):
         return jsonify(tb.to_dict())
     except:
         # return render_template('index.html')
-        return 'Not found', 404
         print('GFDM')
+        return 'Not found', 404
 #     return render_template("index.html", mars = mars, tables = [mars['table']])
 # Route that will trigger the scrape function
 
