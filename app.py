@@ -4,8 +4,7 @@ import datetime
 from flask import Flask, render_template, redirect, jsonify
 from flask_pymongo import PyMongo
 
-rds_connection_string = "postgres:password@bootcamp.cbtoq3riq9z0.us-west-1.rds.amazonaws.com:5432/project2"
-engine = create_engine(f'postgresql://{rds_connection_string}')
+
 
 # Create an instance of Flask
 app = Flask(__name__)
@@ -15,9 +14,9 @@ rds_connection_string = "postgres:password@bootcamp.cbtoq3riq9z0.us-west-1.rds.a
 engine = create_engine(f'postgresql://{rds_connection_string}')
 
 # Route to render index.html template using data from Mongo
-@app.route("/<table>")
-def home(table):
-    return render_template('instuctions.html')
+@app.route("/")
+def home():
+    return render_template('james_index.html')
 
 @app.route("/<table>")
 def tables(table):
