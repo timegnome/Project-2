@@ -1,0 +1,54 @@
+ALTER TABLE ark DROP COLUMN flags;
+ALTER TABLE assettocorsa DROP COLUMN flags;
+ALTER TABLE bdo DROP COLUMN flags;
+ALTER TABLE beatsaber DROP COLUMN flags;
+ALTER TABLE celeste DROP COLUMN flags;
+ALTER TABLE civ6 DROP COLUMN flags;
+ALTER TABLE conan DROP COLUMN flags;
+ALTER TABLE csgo DROP COLUMN flags;
+ALTER TABLE cuphead DROP COLUMN flags;
+ALTER TABLE deadcells DROP COLUMN flags;
+
+ALTER TABLE destiny2 DROP COLUMN flags;
+ALTER TABLE dirtrally DROP COLUMN flags;
+ALTER TABLE dota2 DROP COLUMN flags;
+ALTER TABLE efootballpes2020 DROP COLUMN flags;
+ALTER TABLE eso DROP COLUMN flags;
+ALTER TABLE factorio DROP COLUMN flags;
+ALTER TABLE ffxiv DROP COLUMN flags;
+ALTER TABLE fo4 DROP COLUMN flags;
+ALTER TABLE footballmanager2019 DROP COLUMN flags;
+ALTER TABLE footballmanager2020 DROP COLUMN flags;
+
+ALTER TABLE geometrydash DROP COLUMN flags;
+ALTER TABLE gettingoverit DROP COLUMN flags;
+ALTER TABLE gris DROP COLUMN flags;
+ALTER TABLE gta5 DROP COLUMN flags;
+ALTER TABLE heartsofiron DROP COLUMN flags;
+ALTER TABLE hollowknight DROP COLUMN flags;
+ALTER TABLE mhw DROP COLUMN flags;
+ALTER TABLE nba2k19 DROP COLUMN flags;
+ALTER TABLE pd2 DROP COLUMN flags;
+ALTER TABLE poe DROP COLUMN flags;
+
+ALTER TABLE portal2 DROP COLUMN flags;
+ALTER TABLE pubg DROP COLUMN flags;
+ALTER TABLE r6siege DROP COLUMN flags;
+ALTER TABLE raft DROP COLUMN flags;
+ALTER TABLE rimworld DROP COLUMN flags;
+ALTER TABLE rocketleague DROP COLUMN flags;
+ALTER TABLE russianfishing4 DROP COLUMN flags;
+ALTER TABLE rust DROP COLUMN flags;
+ALTER TABLE sevendtd DROP COLUMN flags;
+ALTER TABLE skyrim DROP COLUMN flags;
+
+ALTER TABLE smite DROP COLUMN flags;
+ALTER TABLE steep DROP COLUMN flags;
+ALTER TABLE tekken7 DROP COLUMN flags;
+ALTER TABLE terraria DROP COLUMN flags;
+ALTER TABLE tf2 DROP COLUMN flags;
+ALTER TABLE totalwarwarhammer DROP COLUMN flags;
+ALTER TABLE transformice DROP COLUMN flags;
+ALTER TABLE warframe DROP COLUMN flags;
+ALTER TABLE warthunder DROP COLUMN flags;
+ALTER TABLE witcher3 DROP COLUMN flags;
