@@ -9,10 +9,10 @@
 
 </head>
 <body>
-	<nav class="navbar navbar-expand-md navbar-light" style = 'background-color: rgb(2, 20, 54)'>
+	<nav class="navbar navbar-expand-md navbar-light" style = ' background-color: rgb(2, 20, 54)'>
 		<div>
 		<ul class="navbar-nav mr-auto">
-			<a class="navbar-brand" style= 'color:rgb(92, 3, 3)' href="index.html">Video Games</a>
+			<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(110, 2, 2)' type="submit"id="Scatter" >Video Games</a>
 		</ul>
 		</div>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,26 +21,32 @@
 		<div class="navbar-collapse collapse w-100" id="navbarSupportedContent">
 			<ul class="nav navbar-nav ml-auto w-100 justify-content-end">
 				<li>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit"id="Scatter" >Scatter</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(121, 0, 0)' type="submit"id="Scatter" >Scatter</button>
 				</li>
 				<li>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit"id="Area" >Area</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(128, 0, 0)' type="submit"id="Area" >Area</button>
 				</li>
 				<li>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit"id="Motion" >Motion</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(110, 0, 0)' type="submit"id="Motion" >Motion</button>
 				</li>
 				<li>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit"id="StackedBar" >Stacked Bar</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(119, 0, 0)' type="submit"id="StackedBar" >Stacked Bar</button>
 				</li>
 				<li>
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit"id="PreditionModel" >Predition Model</button>
+					<button class="btn btn-outline-success my-2 my-sm-0" style= 'border-color: red; color:rgb(116, 0, 0)' type="submit"id="PreditionModel" >Predition Model</button>
 				</li>
 			</ul>
 		</div>
 	</nav>
 	<div id = 'graph'></div>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://d3js.org/d3.v6.min.js"></script>
+	<script src={{url_for("static", filename ="main_app.js")}}></script>
 	<script src={{url_for("static", filename ="motion.js")}}></script>
+	<!-- <script src={{url_for("static", filename ="motion.js")}}></script>
+	<script src={{url_for("static", filename ="motion.js")}}></script>
+	<script src={{url_for("static", filename ="motion.js")}}></script>
+	<script src={{url_for("static", filename ="motion.js")}}></script> -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
