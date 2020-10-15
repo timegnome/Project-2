@@ -27,7 +27,7 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate${margin.left}, ${margin.top}`);
 
 // Load json file 
-d3.json("http:127.0.01:5000/supertable").then(function(allData, err) {
+d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
     if (err) throw err;
 
     // Print the mergedData
