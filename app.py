@@ -32,7 +32,7 @@ def tables(table):
         # print(mars)
         # Return template and data
 #         return render_template("index.html", mars = mars)
-        return jsonify(tb.to_dict())
+        return tb.to_json(orient ='records')
     except:
         # return render_template('index.html')
         print('GFDM')
