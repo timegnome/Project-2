@@ -4,8 +4,7 @@ import datetime
 from flask import Flask, render_template, redirect, jsonify
 from flask_pymongo import PyMongo
 
-rds_connection_string = "postgres:password@bootcamp.cbtoq3riq9z0.us-west-1.rds.amazonaws.com:5432/project2"
-engine = create_engine(f'postgresql://{rds_connection_string}')
+
 
 # Create an instance of Flask
 app = Flask(__name__)
