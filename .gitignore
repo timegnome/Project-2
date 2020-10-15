@@ -1,7 +1,8 @@
 *ipynb
 *ipynb_checkpoints
 *ipynb-checkpoints
-
+*.vscode
+*vscode
 *.DS_Store
 
 # Prerequisites
