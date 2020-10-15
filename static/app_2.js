@@ -11,8 +11,8 @@ var chartMargin = {
 };
 
 // Define the dimensions of the chart area
-var width = svgWidth = margin.let - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
+var width = svgWidth - chartMargin.left - chartMargin.right;
+var height = svgHeight - chartMargin.top - chartMargin.bottom;
 
 // Select body, append SVG area to it, and set the dimensions
 var svg = d3
@@ -24,7 +24,7 @@ var svg = d3
 
 // Append a group to the SVG area and translate it to the right and down to adhere to the set margins
 var chartGroup = svg.append("g")
-    .attr("transform", `translate${margin.left}, ${margin.top}`);
+    .attr("transform", `translate${chartMargin.left}, ${chartMargin.top}`);
 
 // Load json file 
 d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {

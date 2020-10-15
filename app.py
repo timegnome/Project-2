@@ -17,7 +17,7 @@ app = Flask(__name__)
 # Route to render index.html template using data from Mongo
 @app.route("/")
 def home():
-    return render_template('instructions.html')
+    return render_template('instruct.html')
 
 @app.route("/<table>")
 def tables(table):
