@@ -27,7 +27,7 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 // Load json file 
-d3.json("/yeargamedata3").then(function(gameData, err) {
+d3.json("/yeargamedata4").then(function(gameData, err) {
     if (err) throw err;
 
     // Print the mergedData
@@ -38,15 +38,15 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
 
     // Format the data
     gameData.forEach(function(data) {
-        data.Year = +data.Year;
+        data.year = +data.year;
         // data.datetime = parseTime(data.datetime);
         // data.players = +data.players;
-        data["Twitch Users"] = +data["Twitch Users"]
+        data.twitch_users = +data.twitch_users
     });
     
     // * Create a filter that returns years > 2016
     function filterYear(recentDates) {
-        return parseInt(recentDates.Year) >= 2016;
+        return parseInt(recentDates.year) >= 2016;
     }
     
     // * Use filter() to pass the function as its argument
@@ -54,14 +54,14 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
     // console.log(filteredYear);
 
     // * Use map to return all the filtered Twitch users and genres
-    var filteredGenres = filteredYear.map(recentDates => recentDates.Genre);
+    var filteredGenres = filteredYear.map(recentDates => recentDates.genre);
     // console.log(filteredGenres);
-    var filteredUsers = filteredYear.map(recentData => recentData["Twitch Users"]);
+    var filteredUsers = filteredYear.map(recentData => recentData.twitch_users);
     // console.log(filteredUsers);
 
     genres = new Set ()
     gameData.forEach(function(data) {
-        genres.add(data.Genre)
+        genres.add(data.genre)
     })
 
     lineData = {}
@@ -70,8 +70,8 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
     genres.forEach(g => {
         line = []
         gameData.forEach(d => {
-            if (d.Genre == g) {
-                line.push([d.Year, d["Twitch Users"]])
+            if (d.genre == g) {
+                line.push([d.year, d.twitch_users])
             }
         })
         lineData[g] = line
@@ -106,21 +106,21 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
     
     // Create scales
     var xLinearScale = d3.scaleLinear()
-        .domain(d3.extent(gameData, d => d.Year))
+        .domain(d3.extent(gameData, d => d.year))
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(gameData, d => d["Twitch Users"])])
+        .domain([0, d3.max(gameData, d => d.twitch_users)])
         .range([height, 0]);
 
     // Create axes
     var xAxis = d3.axisBottom(xLinearScale).ticks(5);
     var yAxis = d3.axisLeft(yLinearScale);
 
-    // // Color palette
-    // var color = d3.scaleOrdinal()
-    //     .domain(gameViews)
-    //     .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
+    // Color palette
+    var color = d3.scaleOrdinal()
+        .domain(genres)
+        .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
 
     // append axes
     chartGroup.append("g")
@@ -130,17 +130,37 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
     chartGroup.append("g")
         .call(yAxis);
     
+    var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80,-60])
+    .style("color", "white")
+    .html(function(d) {
+        return(`${d}`)
+    })
+    
+    chartGroup.call(toolTip)
+    
     genres.forEach(g => {
         var line = d3.line()
             .x(d => xLinearScale(d[0]))
             .y(d => yLinearScale(d[1]));
         chartGroup.append("path")
+            .style("stroke", color(g))
             .attr("fill", "none")
-            .attr("stroke", "blue")
+            // .attr("color", g)
             .attr("stroke-width", 3)
             .attr("d", line(lineData[g]));
+            chartGroup.on("mouseover", function() {
+              toolTip.show(g, this)
+            })
+              .on("mouseout", function() {
+                toolTip.hide(g)
+              })
     })
+    
+    
 
+    
     
     
     // Show the area
