@@ -44,6 +44,21 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
         data["Twitch Users"] = +data["Twitch Users"]
     });
     
+    // * Create a filter that returns years > 2016
+    function filterYear(recentDates) {
+        return parseInt(recentDates.Year) >= 2016;
+    }
+    
+    // * Use filter() to pass the function as its argument
+    var filteredYear = gameData.filter(filterYear);
+    // console.log(filteredYear);
+
+    // * Use map to return all the filtered Twitch users and genres
+    var filteredGenres = filteredYear.map(recentDates => recentDates.Genre);
+    // console.log(filteredGenres);
+    var filteredUsers = filteredYear.map(recentData => recentData["Twitch Users"]);
+    // console.log(filteredUsers);
+
     genres = new Set ()
     gameData.forEach(function(data) {
         genres.add(data.Genre)
@@ -66,32 +81,28 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
         //     }
         // })
     })
-    // console.log(genres)
-    // console.log(lineData)
+    console.log(genres)
+    console.log(lineData)
     
 
 
-
+// lineData = gameData.map(d => {return {x: +d.Year, y: +d["Twitch Users"]}})
     // Group the data: one array for each value of the x axis
-    var sumstat = d3.nest()
-        .key(function(d) {
-            return d.Year;
-        })
-        .entries(gameData);
+    // var sumstat = d3.nest()
+    //     .key(function(d) {
+    //         return d.datetime;
+    //     })
+    //     .entries(allData);
     
     // Stack the data: each group will be represented on top of each other
-    var gameViews = gameData[0]["Twitch Users"]
-    var gameType = gameData[0]["Year"]
-   
-    var stackedData = d3.stack()
-        .keys(gameType)
-        .value(function(d, key) {
-            console.log(key)
-            console.log(d)
-            return d.values[key]["Twitch Users"]
-        })
-        (sumstat)
-    
+    // var gameViews = allData.twitchviewers
+    // var gameType = allData.genre
+    // var stackedData = d3.stack()
+        // .keys(gameType)
+        // .value(function(d, key) {
+        //     return d.values[key].n
+        // })
+        // (sumstat)
     
     // Create scales
     var xLinearScale = d3.scaleLinear()
@@ -107,9 +118,9 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
     var yAxis = d3.axisLeft(yLinearScale);
 
     // // Color palette
-    var color = d3.scaleOrdinal()
-        .domain(gameViews)
-        .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
+    // var color = d3.scaleOrdinal()
+    //     .domain(gameViews)
+    //     .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
 
     // append axes
     chartGroup.append("g")
@@ -123,42 +134,37 @@ d3.json("/yeargamedata3").then(function(gameData, err) {
         var line = d3.line()
             .x(d => xLinearScale(d[0]))
             .y(d => yLinearScale(d[1]));
-        chartGroup.append("path")  // trouble area 
+        chartGroup.append("path")
             .attr("fill", "none")
-            // .attr("stroke", "blue")
-            .attr("stroke-width", 5)
+            .attr("stroke", "blue")
+            .attr("stroke-width", 3)
             .attr("d", line(lineData[g]));
     })
 
+    
+    
+    // Show the area
+    // chartGroup.selectAll("mylayers")
+    //     .data(gameData)
+    //     .enter()
+    //     .append("")
+        // .append("path")
+        //     .style("fill", function(d) {
+        //         name = gameViews[d.key-1];
+        //         return color(name);
+        //     })
+        //     .attr("d", d3.area()
+        //         .x(function(d, i) {
+        //             return x(d.data.key);
+        //         })
+        //         .y0(function(d) {
+        //             return y(d[0]);
+        //         })
+        //         .y1(function(d) {
+        //             return y(d[1]);
+        //         })
+        //     ) 
 
     
-    // // Show the area
-    chartGroup.selectAll("mylayers")
-        .data(stackedData)
-        .enter()
-        .append("path")  // trouble area
-            .style("fill", function(d) {
-                name = gameViews[d.key];
-                console.log(name)
-                return color(name);
-            })
-            .attr("d", d3.area()
-                .x(function(d, i) {
-                    console.log(d)
-                    console.log(d.data)
-                    console.log(d.data.key)
-                    return x(d.data.key);
-                })
-                .y0(function(d) {
-                    
-                    return y(d[0]);
-                })
-                .y1(function(d) {
-                    return y(d[1]);
-                })
-            )
-     
- })
-    
 
-    
+})
