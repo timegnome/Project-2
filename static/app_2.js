@@ -24,56 +24,89 @@ var svg = d3
 
 // Append a group to the SVG area and translate it to the right and down to adhere to the set margins
 var chartGroup = svg.append("g")
-    .attr("transform", `translate${chartMargin.left}, ${chartMargin.top}`);
+    .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 // Load json file 
-d3.json("alldata").then(function(allData, err) {
+d3.json("/yeargamedata3").then(function(gameData, err) {
     if (err) throw err;
 
     // Print the mergedData
-    console.log(allData);
+    console.log(gameData);
     
-    // Parse datetime
-    var parseTime = d3.timeFormat("%Y-%m3-%d")
+    // // Parse datetime
+    // var parseTime = d3.timeFormat("%Y-%m3-%d")
 
     // Format the data
-    allData.forEach(function(data) {
-        data.datetime = parseTime(data.datetime);
+    gameData.forEach(function(data) {
+        data.Year = +data.Year;
+        // data.datetime = parseTime(data.datetime);
         // data.players = +data.players;
-        data.twitchviewers = +data.twitchviewers
+        data["Twitch Users"] = +data["Twitch Users"]
     });
+    
+    genres = new Set ()
+    gameData.forEach(function(data) {
+        genres.add(data.Genre)
+    })
+
+    lineData = {}
+    
+
+    genres.forEach(g => {
+        line = []
+        gameData.forEach(d => {
+            if (d.Genre == g) {
+                line.push([d.Year, d["Twitch Users"]])
+            }
+        })
+        lineData[g] = line
+        // userData[g] = gameData.filter(d => {
+        //     if (d.Genre == g) {
+        //         return d["Twitch Users"]
+        //     }
+        // })
+    })
+    // console.log(genres)
+    // console.log(lineData)
+    
+
+
 
     // Group the data: one array for each value of the x axis
     var sumstat = d3.nest()
         .key(function(d) {
-            return d.datetime;
+            return d.Year;
         })
-        .entries(allData);
+        .entries(gameData);
     
     // Stack the data: each group will be represented on top of each other
-    var gameViews = allData.twitchviewers
-    var gameType = allData.genre
-    // var stackedData = d3.stack()
-        // .keys(gameType)
-        // .value(function(d, key) {
-        //     return d.values[key].n
-        // })
-        // (sumstat)
+    var gameViews = gameData[0]["Twitch Users"]
+    var gameType = gameData[0]["Year"]
+   
+    var stackedData = d3.stack()
+        .keys(gameType)
+        .value(function(d, key) {
+            console.log(key)
+            console.log(d)
+            return d.values[key]["Twitch Users"]
+        })
+        (sumstat)
+    
     
     // Create scales
     var xLinearScale = d3.scaleLinear()
-        .domain(d3.extent(allData, d => d.datetime))
+        .domain(d3.extent(gameData, d => d.Year))
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(allData, d => d.twitchviewers)])
+        .domain([0, d3.max(gameData, d => d["Twitch Users"])])
         .range([height, 0]);
 
     // Create axes
     var xAxis = d3.axisBottom(xLinearScale).ticks(5);
     var yAxis = d3.axisLeft(yLinearScale);
 
-    // Color palette
+    // // Color palette
     var color = d3.scaleOrdinal()
         .domain(gameViews)
         .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
@@ -86,28 +119,46 @@ d3.json("alldata").then(function(allData, err) {
     chartGroup.append("g")
         .call(yAxis);
     
-    var line = d3.area()
-        .x(d => xTimeScale(d.datetime))
-        .y(d => yLinearScale(d.twitchviewers));
+    genres.forEach(g => {
+        var line = d3.line()
+            .x(d => xLinearScale(d[0]))
+            .y(d => yLinearScale(d[1]));
+        chartGroup.append("path")  // trouble area 
+            .attr("fill", "none")
+            // .attr("stroke", "blue")
+            .attr("stroke-width", 5)
+            .attr("d", line(lineData[g]));
+    })
+
+
     
-    // Show the area
+    // // Show the area
     chartGroup.selectAll("mylayers")
-        .data([allData])
+        .data(stackedData)
         .enter()
-        .append("path")
+        .append("path")  // trouble area
             .style("fill", function(d) {
-                name = gameViews[d.key-1];
+                name = gameViews[d.key];
+                console.log(name)
                 return color(name);
             })
             .attr("d", d3.area()
                 .x(function(d, i) {
+                    console.log(d)
+                    console.log(d.data)
+                    console.log(d.data.key)
                     return x(d.data.key);
                 })
                 .y0(function(d) {
+                    
                     return y(d[0]);
                 })
                 .y1(function(d) {
                     return y(d[1]);
                 })
-            ) 
-})
+            )
+     
+ })
+    
+
+    
