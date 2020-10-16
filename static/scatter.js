@@ -11,8 +11,6 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-
-
 // Create an SVG wrapper, append an SVG group that will hold our chart,
 // and shift the latter by left and top margins.
 var svg = d3
@@ -28,20 +26,26 @@ var chartGroup = svg.append("g")
 // Initial Params
 var chosenXAxis = "datetime";
 var chosenYAxis = "players";
-var chosenGenre = "fps"
+var chosenGenre = "rpg";
 
+var parseTime = d3.timeFormat("%Y-%m-%d");
 
 // function used for updating x-scale var upon click on genre/axis label
 function xScale(mergedData, chosenXAxis, chosenGenre) {
     
     // filter data according to new genre
-    var filteredData = Object.values(mergedData).filter(data => data.genre == chosenGenre);
+    var filteredData = (mergedData).filter(data => data.genre === chosenGenre);
+    
+    filteredData.forEach(function(data) {
+      data.datetime = Date.parse(parseTime(data.datetime));
+    })
 
     // create scales
     var xTimeScale = d3.scaleTime()
         .domain(d3.extent(filteredData, d => d[chosenXAxis]))
         .range([0, width]);
 
+    console.log(d3.extent(filteredData, d => d[chosenXAxis]))
     return xTimeScale;
 
 }
@@ -50,21 +54,21 @@ function xScale(mergedData, chosenXAxis, chosenGenre) {
 function yScale(mergedData, chosenYAxis, chosenGenre) {
     
     // filter data according to new genre
-    var filteredData = Object.values(mergedData).filter(data => data.genre == chosenGenre);
+    var filteredData = (mergedData).filter(data => data.genre === chosenGenre);
+    
     // create scales
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(filteredData, d => d[chosenYAxis]) * 0.8,
             d3.max(filteredData, d => d[chosenYAxis]) * 1.2
         ])
         .range([height, 0]);
-  
+
     return yLinearScale;
-  
 }
 
 // function used for updating xAxis var upon click on axis label
 function renderXAxes(newXScale, xAxis) {
-  var bottomAxis = d3.axisBottom(newXScale).tickFormat(d3.timeFormat("%y-%m-%d"));
+  var bottomAxis = d3.axisBottom(newXScale);
 
   xAxis.transition()
     .duration(1000)
@@ -84,11 +88,21 @@ function renderYAxes(newYScale, yAxis) {
     return yAxis;
 }
 
+
 // function used for updating circles group with a transition to
 // new circles
-function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
 
-  circlesGroup.transition()
+function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis, filteredData) {
+  circlesGroup
+    .exit()
+    .remove()
+
+  circlesGroup.data(filteredData)
+    .enter()
+    .append("circle")
+
+  circlesGroup
+    .transition()
     .duration(1000)
     .attr("cx", d => newXScale(d[chosenXAxis]))
     .attr("cy", d => newYScale(d[chosenYAxis]));
@@ -107,50 +121,57 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYA
 // }
 
 // function used for updating circles group with new tooltip
-// function updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup) {
 
-//   var xLabel = "Date:";
+  var xLabel = "Date:";
 
-//   var yLabel = "";
+  var yLabel = "";
 
-//     if (chosenYAxis === "players") {
-//          yLabel = "Active Players:"
-//     }
-//     else {
-//          yLabel = "Twtich Viewers:"
-//     }
+    if (chosenYAxis === "players") {
+         yLabel = "Active Players:"
+    }
+    else {
+         yLabel = "Twitch Viewers:"
+    }
 
-//   var toolTip = d3.tip()
-//     .attr("class", "d3-tip")
-//     .offset([80, -60])
-//     .html(function(d) {
-//       return (`${chosenGenre}<br>${xLabel} ${d[chosenXAxis]}<br>${yLabel} ${d[chosenYAxis]}`);
-//     });
+  var toolTip = d3.tip()
+    .attr("class", "d3-tip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`${chosenGenre.toUpperCase()}<br>${xLabel} ${(parseTime(d[chosenXAxis]))}<br>${yLabel} ${(d[chosenYAxis]).toLocaleString()}`);
+    });
+  
+  circlesGroup.call(toolTip);
 
-//   circlesGroup.call(toolTip);
+  circlesGroup.on("mouseover", function(data) {
+    toolTip.show(data, this);
+  })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data, this);
+    });
 
-//   circlesGroup.on("mouseover", function(data) {
-//     toolTip.show(data, this);
-//   })
-//     // onmouseout event
-//     .on("mouseout", function(data, index) {
-//       toolTip.hide(data, this);
-//     });
-
-//   return circlesGroup;
-// }
+  return circlesGroup;
+}
 
 
 // Retrieve data from the CSV file and execute everything below
 d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
   if (err) throw err;
-    
-  var filteredData = Object.values(mergedData).filter(data => data.genre == chosenGenre);
+
+  
+  // Format the data
+  mergedData.forEach(function(data) {
+    data.datetime = Date.parse(parseTime(data.datetime));
+    data.players = +data.players;
+    data.twitchviewers = +data.twitchviewers;
+  })
+
+  var filteredData = (mergedData).filter(data => data.genre === chosenGenre);
+
   var xTimeScale = xScale(mergedData, chosenXAxis, chosenGenre);
   var yLinearScale = yScale(mergedData, chosenYAxis, chosenGenre);
-  
-  console.log(typeof(filteredData));
-
+ 
   // Create initial axis functions
   var bottomAxis = d3.axisBottom(xTimeScale);
   var leftAxis = d3.axisLeft(yLinearScale);
@@ -166,6 +187,7 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
     .classed("y-axis", true)
     .call(leftAxis);
 
+
   // append initial circles
   var circlesGroup = chartGroup.selectAll("circle")
     .data(filteredData)
@@ -173,8 +195,8 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
     .append("circle")
     .attr("cx", d => xTimeScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", 1)
-    .classed("stateCircle", true)
+    .attr("r", 1.5)
+
 
   // Create group for five genre labels
   var genreLabelsGroup = chartGroup.append("g")
@@ -185,7 +207,7 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
     .attr("y", 20)
     .attr("value", "fps") // value to grab for event listener
     .classed("aText", true)
-    .classed("active", true)
+    .classed("inactive", true)
     .text("First Person Shooter Games");
 
   var platformerLabel = genreLabelsGroup.append("text")
@@ -201,7 +223,7 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
     .attr("y", 60)
     .attr("value", "rpg") // value to grab for event listener
     .classed("aText", true)
-    .classed("inactive", true)
+    .classed("active", true)
     .text("Role-Playing Games");
 
   var sportsLabel = genreLabelsGroup.append("text")
@@ -228,7 +250,7 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
         .classed("aText", true)
         .classed("active", true)
         .attr("x", 0)
-        .attr("y", 0 - 20)
+        .attr("y", 0 - 60)
         .attr("dy", "1em")
         .attr("transform", "rotate(-90)")
         .attr("value", "players") // value to grab for event listener
@@ -238,14 +260,14 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
         .classed("aText", true)
         .classed("inactive", true)
         .attr("x", 0)
-        .attr("y", 0 - 40)
+        .attr("y", 0 - 80)
         .attr("dy", "1em")
         .attr("transform", "rotate(-90)")
         .attr("value", "twitchviewers") // value to grab for event listener
         .text("Twitch Viewers");
 
   // updateToolTip function above csv import
-  // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup);
 
   // genre labels event listener
   genreLabelsGroup.selectAll("text")
@@ -258,27 +280,25 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
         chosenGenre = value;
 
         console.log(chosenGenre)
-
-        // functions here found above csv import
+        var filteredData = (mergedData).filter(data => data.genre === chosenGenre);
 
         // updates x scale for new data
         xTimeScale = xScale(mergedData, chosenXAxis, chosenGenre);
 
+        // updates y scale for new data
+        yLinearScale = yScale(mergedData, chosenYAxis, chosenGenre);
+
         // updates x axis with transition
         xAxis = renderXAxes(xTimeScale, xAxis);
         
-        // updates y scale for new data
-        yLinearScale = yScale(mergedData, chosenYAxis);
-
         // updates y axis with transition
         yAxis = renderYAxes(yLinearScale, yAxis);
 
-
         // updates circles with new values
-        circlesGroup = renderCircles(circlesGroup, xTimeScale, chosenXAxis, yLinearScale, chosenYAxis);
+        circlesGroup = renderCircles(circlesGroup, xTimeScale, chosenXAxis, yLinearScale, chosenYAxis, filteredData);
         
         // updates tooltips with new info
-        // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup);
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup);
 
         // changes classes to change bold text
         if (chosenGenre === "fps") {
@@ -381,41 +401,43 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
             // replace chosenYAxis with value
             chosenYAxis = value;
             console.log(chosenYAxis)
+            var filteredData = (mergedData).filter(data => data.genre === chosenGenre);
 
             // updates x scale for new data
             xTimeScale = xScale(mergedData, chosenXAxis, chosenGenre);
 
-            // updates x axis with transition
-            xAxis = renderXAxes(xTimeScale, xAxis);
-
             // updates y scale for new data
             yLinearScale = yScale(mergedData, chosenYAxis, chosenGenre);
+
+            // updates x axis with transition
+            xAxis = renderXAxes(xTimeScale, xAxis);
 
             // updates y axis with transition
             yAxis = renderYAxes(yLinearScale, yAxis);
 
             // updates circles with new values
-            circlesGroup = renderCircles(circlesGroup, xTimeScale, chosenXAxis, yLinearScale, chosenYAxis);
+
+            circlesGroup = renderCircles(circlesGroup, xTimeScale, chosenXAxis, yLinearScale, chosenYAxis, filteredData);
 
             // updates tooltips with new info
-            // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup);
+            circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup);
 
             //change classes to change bold text
-            if (chosenYAxis === "twitchviewers") {
+            if (chosenYAxis === "players") {
                 playerLabel
-                  .classed("active", false)
-                  .classed("inactive", true);
-                twitchLabel
                   .classed("active", true)
                   .classed("inactive", false);
+                twitchLabel
+                  .classed("active", false)
+                  .classed("inactive", true);
             }
             else {
                 playerLabel
-                    .classed("active", true)
-                    .classed("inactive", false);
-                twitchLabel
                     .classed("active", false)
                     .classed("inactive", true);
+                twitchLabel
+                    .classed("active", true)
+                    .classed("inactive", false);
             }
         }
     });
