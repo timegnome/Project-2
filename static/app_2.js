@@ -56,7 +56,7 @@ d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
     var stackedData = d3.stack()
         .keys(gameType)
         .value(function(d, key) {
-            return d.values[key].n
+            return d.values[key].year
         })
         (sumstat)
     
@@ -92,7 +92,7 @@ d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
     
     // Show the area
     chartGroup.selectAll("mylayers")
-        .data([allData])
+        .data([stackedData])
         .enter()
         .append("path")
             .style("fill", function(d) {
