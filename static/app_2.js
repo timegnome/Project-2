@@ -132,7 +132,7 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     
     var toolTip = d3.tip()
     .attr("class", "tooltip")
-    .offset([80,-60])
+    .offset([200,-10])
     .style("color", "white")
     .html(function(d) {
         return(`${d}`)
@@ -149,7 +149,8 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
             .attr("fill", "none")
             // .attr("color", g)
             .attr("stroke-width", 3)
-            .attr("d", line(lineData[g]));
+            .attr("d", line(lineData[g]))
+            console.log(g)
             chartGroup.on("mouseover", function() {
               toolTip.show(g, this)
             })
