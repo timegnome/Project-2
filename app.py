@@ -26,6 +26,7 @@ def tables(table):
     try:
         tb=pd.read_sql_query(f'select * from {table}', con=engine)
         # print(mars)
+        print(tb.head())
         # Return template and data
 #         return render_template("index.html", mars = mars)
         return tb.to_json(orient ='records')

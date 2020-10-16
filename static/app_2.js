@@ -19,54 +19,98 @@ var svg = d3
     // will need to include this id in the html file
     .select('#kj_dataviz')
     .append("svg")
-    .attr("width", svgWdidth)
+    .attr("width", svgWidth)
     .attr("height", svgHeight);
 
 // Append a group to the SVG area and translate it to the right and down to adhere to the set margins
 var chartGroup = svg.append("g")
-    .attr("transform", `translate${chartMargin.left}, ${chartMargin.top}`);
+    .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 // Load json file 
-d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
+d3.json("/yeargamedata4").then(function(gameData, err) {
     if (err) throw err;
 
     // Print the mergedData
-    console.log(allData);
+    console.log(gameData);
     
-    // Parse datetime
-    var parseTime = d3.timeParse("%Y-%b-%d")
+    // // Parse datetime
+    // var parseTime = d3.timeFormat("%Y-%m3-%d")
 
     // Format the data
-    allData.forEach(function(data) {
-        data.datetime = parseTime(data.datetime);
+    gameData.forEach(function(data) {
+        data.year = +data.year;
+        // data.datetime = parseTime(data.datetime);
         // data.players = +data.players;
-        data.twitchviewers = +data.twitchviewers
+        data.twitch_users = +data.twitch_users
     });
+    
+    // * Create a filter that returns years > 2016
+    function filterYear(recentDates) {
+        return parseInt(recentDates.year) >= 2016;
+    }
+    
+    // * Use filter() to pass the function as its argument
+    var filteredYear = gameData.filter(filterYear);
+    // console.log(filteredYear);
 
-    // Group the data: one array for each value of the x axis
-    var sumstat = d3.net()
-        .key(function(d) {
-            return d.datetime;
+    // * Use map to return all the filtered Twitch users and genres
+    var filteredGenres = filteredYear.map(recentDates => recentDates.genre);
+    // console.log(filteredGenres);
+    var filteredUsers = filteredYear.map(recentData => recentData.twitch_users);
+    // console.log(filteredUsers);
+
+    genres = new Set ()
+    gameData.forEach(function(data) {
+        genres.add(data.genre)
+    })
+
+    lineData = {}
+    
+
+    genres.forEach(g => {
+        line = []
+        gameData.forEach(d => {
+            if (d.genre == g) {
+                line.push([d.year, d.twitch_users])
+            }
         })
-        .entries(data);
+        lineData[g] = line
+        // userData[g] = gameData.filter(d => {
+        //     if (d.Genre == g) {
+        //         return d["Twitch Users"]
+        //     }
+        // })
+    })
+    console.log(genres)
+    console.log(lineData)
+    
+
+
+// lineData = gameData.map(d => {return {x: +d.Year, y: +d["Twitch Users"]}})
+    // Group the data: one array for each value of the x axis
+    // var sumstat = d3.nest()
+    //     .key(function(d) {
+    //         return d.datetime;
+    //     })
+    //     .entries(allData);
     
     // Stack the data: each group will be represented on top of each other
-    var gameViews = data.twitchviewers
-    var gameType = data.genre
-    var stackedData = d3.stack()
-        .keys(gameType)
-        .value(function(d, key) {
-            return d.values[key].year
-        })
-        (sumstat)
+    // var gameViews = allData.twitchviewers
+    // var gameType = allData.genre
+    // var stackedData = d3.stack()
+        // .keys(gameType)
+        // .value(function(d, key) {
+        //     return d.values[key].n
+        // })
+        // (sumstat)
     
     // Create scales
     var xLinearScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.datetime))
+        .domain(d3.extent(gameData, d => d.year))
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.twitchviewers)])
+        .domain([0, d3.max(gameData, d => d.twitch_users)])
         .range([height, 0]);
 
     // Create axes
@@ -75,7 +119,7 @@ d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
 
     // Color palette
     var color = d3.scaleOrdinal()
-        .domain(gameViews)
+        .domain(genres)
         .range(["#03fca5", "#037bfc", "#ba03fc", "#fc9d03", "#0341fc"])
 
     // append axes
@@ -86,30 +130,61 @@ d3.json("http:127.0.01:5000/alldata").then(function(allData, err) {
     chartGroup.append("g")
         .call(yAxis);
     
-    var line = d3.area()
-        .x(d => xTimeScale(d.datetime))
-        .y(d => yLinearScale(d.twitchviewers));
+    var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80,-60])
+    .style("color", "white")
+    .html(function(d) {
+        return(`${d}`)
+    })
+    
+    chartGroup.call(toolTip)
+    
+    genres.forEach(g => {
+        var line = d3.line()
+            .x(d => xLinearScale(d[0]))
+            .y(d => yLinearScale(d[1]));
+        chartGroup.append("path")
+            .style("stroke", color(g))
+            .attr("fill", "none")
+            // .attr("color", g)
+            .attr("stroke-width", 3)
+            .attr("d", line(lineData[g]));
+            chartGroup.on("mouseover", function() {
+              toolTip.show(g, this)
+            })
+              .on("mouseout", function() {
+                toolTip.hide(g)
+              })
+    })
+    
+    
+
+    
+    
     
     // Show the area
-    chartGroup.selectAll("mylayers")
-        .data([stackedData])
-        .enter()
-        .append("path")
-            .style("fill", function(d) {
-                name = gameViews[d.key-1];
-                return color(name);
-            })
-            .attr("d", d3.area()
-                .x(function(d, i) {
-                    return x(d.data.key);
-                })
-                .y0(function(d) {
-                    return y(d[0]);
-                })
-                .y1(function(d) {
-                    return y(d[1]);
-                })
-            ) 
-}).catch(function(error) {
-    console.log(error);
-});
+    // chartGroup.selectAll("mylayers")
+    //     .data(gameData)
+    //     .enter()
+    //     .append("")
+        // .append("path")
+        //     .style("fill", function(d) {
+        //         name = gameViews[d.key-1];
+        //         return color(name);
+        //     })
+        //     .attr("d", d3.area()
+        //         .x(function(d, i) {
+        //             return x(d.data.key);
+        //         })
+        //         .y0(function(d) {
+        //             return y(d[0]);
+        //         })
+        //         .y1(function(d) {
+        //             return y(d[1]);
+        //         })
+        //     ) 
+
+    
+
+})
