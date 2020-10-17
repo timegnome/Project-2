@@ -87,8 +87,6 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     console.log(genres)
     console.log(lineData)
     
-
-
 // lineData = gameData.map(d => {return {x: +d.Year, y: +d["Twitch Users"]}})
     // Group the data: one array for each value of the x axis
     // var sumstat = d3.nest()
@@ -142,12 +140,36 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     })
     
     chartGroup.call(toolTip)
-    
+    gameGenres = [];
+    // create legend
+//    function gameLegend() {
+//     var legend = d3.select('#kj_dataviz').selectAll(".legend")
+//          .data(color.domain().slice().reverse())
+//      .enter().append("g")
+//          .attr("class", "legend")
+//          .attr("transform", function(d, i) {
+//             console.log(d) 
+//             return "translate(0," + i *50 + ")";
+//          });
+//      legend.append("rect")
+//          .attr("x", 475)
+//          .attr("y", 9)
+//          .attr("width", 18)
+//          .attr("height", 18)
+//          .attr("fill", color)
+//          .append("text")
+//          .style("text-anchor", "end")
+//          .attr("fill", color)
+//          .text(function(d) {
+//              return d.charAt(0).toUpperCase()+d.slice(1);
+//          });
+    // }
     genres.forEach(g => {
         var line = d3.line()
             .x(d => xLinearScale(d[0]))
             .y(d => yLinearScale(d[1]));
         chartGroup.append("path")
+            // .append("g", gameGenres)
             .style("stroke", color(g))
             .attr("fill", "none")
             // .attr("color", g)
@@ -159,6 +181,7 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
               .on("mouseout", function() {
                 toolTip.hide(g)
               })
+        
     })
     
     chartGroup.append("text")
