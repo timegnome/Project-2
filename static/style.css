@@ -33,7 +33,7 @@ body {
 svg {
   display: block;
   margin: 0 auto;
-  background-color: crimson;
+  /* background-color: crimson; */
 }
 
 .axis .domain {
@@ -58,7 +58,7 @@ svg {
 }
 
 .axis--activity .tick:nth-child(odd) text {
-  fill: rgb(77, 2, 2);
+  fill: rgb(19, 2, 2);
 }
 
 .line {

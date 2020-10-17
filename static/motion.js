@@ -1,7 +1,9 @@
 function gameBandWidth(){
+d3.select('#graph').select("div").remove();
+d3.select('#graph').select("svg").remove();
 var margin = { top: 30, right: 10, bottom: 50, left: 300 },
     width = 1000 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
 // Percent two area charts can overlap
 var overlap = 0.2;
@@ -90,7 +92,7 @@ d3.json("/truncdat").then(function(allData, err){
         .attr("y", 0 - (margin.top / 2))
         .attr("text-anchor", "middle")
         .style("font-size", "16px") 
-        .text("Video Game Activity With covid")
+        .text("Video Game Activity")
     var gActivity = svg.append('g')
             .attr('class', 'activities')
             .selectAll('.activity')
@@ -98,7 +100,7 @@ d3.json("/truncdat").then(function(allData, err){
             .enter()
             .append('g')
             .attr('class', function(d) { return 'activity activity--' + d.key; })
-            .color(data.key)
+            .style('color',data.key)
             .attr('transform', function(d) {
                 var ty = activityValue(d) - activityScale.bandwidth() + 25;
                 return 'translate(0,' + ty + ')';

@@ -1,3 +1,6 @@
+function lineNightmare(){
+d3.select('#graph').select("div").remove();
+d3.select('#graph').select("svg").remove();
 // Define the SVG area dimensions
 var svgWidth = 960;
 var svgHeight = 500;
@@ -17,7 +20,7 @@ var height = svgHeight - chartMargin.top - chartMargin.bottom;
 // Select body, append SVG area to it, and set the dimensions
 var svg = d3
     // will need to include this id in the html file
-    .select('#kj_dataviz')
+    .select('#graph')
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
@@ -133,7 +136,7 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     var toolTip = d3.tip()
     .attr("class", "tooltip")
     .offset([80,-60])
-    .style("color", "white")
+    .style("color", "black")
     .html(function(d) {
         return(`${d}`)
     })
@@ -149,8 +152,8 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
             .attr("fill", "none")
             // .attr("color", g)
             .attr("stroke-width", 3)
-            .attr("d", line(lineData[g]));
-            chartGroup.on("mouseover", function() {
+            .attr("d", line(lineData[g]))
+            .on("mouseover", function() {
               toolTip.show(g, this)
             })
               .on("mouseout", function() {
@@ -158,7 +161,12 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
               })
     })
     
-    
+    chartGroup.append("text")
+        .attr('x',width/2)
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px") 
+        .text("Twitch Viewer Ship Activity")
 
     
     
@@ -188,3 +196,4 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     
 
 })
+}

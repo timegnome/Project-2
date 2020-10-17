@@ -1,18 +1,6 @@
-// d3.json("/newgamedata").then(function(data, err){
-//   if (err) throw err;
-//   var genre = data.map(row=>row.Genre)
-//   var users = data.map(row=>row.Users)
-//   var game = data.map(row=>row.Game)
-
-//   // var   
-//   // var date = data.alldata.map(row => row[0]),
-//   // var players = data.alldata.map(row => [1])
-//   console.log(genre)
-//   console.log(users)
-//   console.log(game)
-// })
-
-
+function sunburst(){
+d3.select('#graph').select("div").remove();
+d3.select('#graph').select("svg").remove();
 var data = [{
   type: "sunburst",
 
@@ -60,6 +48,20 @@ var layout = {
   ],
   extendsunburstcolorway: true
 };
+  var svg = d3.select('#graph').append('div').attr('id','plot')
+  Plotly.newPlot('plot', data, layout);
+}
 
-Plotly.newPlot('sunburstdiv', data, layout);
+// d3.json("/newgamedata").then(function(data, err){
+//   if (err) throw err;
+//   var genre = data.map(row=>row.Genre)
+//   var users = data.map(row=>row.Users)
+//   var game = data.map(row=>row.Game)
 
+//   // var   
+//   // var date = data.alldata.map(row => row[0]),
+//   // var players = data.alldata.map(row => [1])
+//   console.log(genre)
+//   console.log(users)
+//   console.log(game)
+// })

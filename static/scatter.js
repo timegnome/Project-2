@@ -1,33 +1,45 @@
-var svgWidth = 960;
-var svgHeight = 600;
+function scatter(){
+  d3.select('#graph').select("div").remove();
+  d3.select('#graph').select("svg").remove();
+  var svgWidth = 960;
+  var svgHeight = 600;
+  
+  var margin = {
+    top: 50,
+    right: 40,
+    bottom: 140,
+    left: 100
+  };
+  
+  var width = svgWidth - margin.left - margin.right;
+  var height = svgHeight - margin.top - margin.bottom;
+  console.log(width)
+  console.log(margin)
+  
+  // Create an SVG wrapper, append an SVG group that will hold our chart,
+  // and shift the latter by left and top margins.
+  var svg = d3
+    .select("#graph")
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
+  console.log(svg)
+  // Append an SVG group
+  var chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-var margin = {
-  top: 20,
-  right: 40,
-  bottom: 140,
-  left: 100
-};
-
-var width = svgWidth - margin.left - margin.right;
-var height = svgHeight - margin.top - margin.bottom;
-
-// Create an SVG wrapper, append an SVG group that will hold our chart,
-// and shift the latter by left and top margins.
-var svg = d3
-  .select("#scatter")
-  .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
-
-// Append an SVG group
-var chartGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-// Initial Params
-var chosenXAxis = "datetime";
-var chosenYAxis = "players";
-var chosenGenre = "rpg";
-
+  chartGroup.append("text")
+    .attr('x',width/2)
+    .attr("y", 0 - (margin.top / 2))
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px") 
+    .text("Growth of Twitch Viewership and Player Base Over Time")
+  
+  // Initial Params
+  var chosenXAxis = "datetime";
+  var chosenYAxis = "players";
+  var chosenGenre = "rpg";
+  
 var parseTime = d3.timeFormat("%Y-%m-%d");
 
 // function used for updating x-scale var upon click on genre/axis label
@@ -154,9 +166,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, chosenGenre, circlesGroup) {
   return circlesGroup;
 }
 
-
 // Retrieve data from the CSV file and execute everything below
-d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
+d3.json("/supertable").then(function(mergedData, err) {
   if (err) throw err;
 
   
@@ -444,3 +455,4 @@ d3.json("http://127.0.0.1:5000/supertable").then(function(mergedData, err) {
 }).catch(function(error) {
   console.log(error);
 });
+}
