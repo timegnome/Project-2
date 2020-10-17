@@ -13,7 +13,7 @@ app = Flask(__name__)
 # Route to render index.html template using data from Mongo
 @app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template('sunburstindex.html')
 
 @app.route("/<table>")
 def tables(table):
@@ -25,8 +25,8 @@ def tables(table):
     # that is choosen by the name that is typed in
     try:
         tb=pd.read_sql_query(f'select * from {table}', con=engine)
+        print (tb.head())
         # print(mars)
-        print(tb.head())
         # Return template and data
 #         return render_template("index.html", mars = mars)
         return tb.to_json(orient ='records')
