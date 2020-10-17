@@ -7,7 +7,7 @@ var svgHeight = 500;
 
 // Define the chart's margins 
 var chartMargin = {
-    top: 20,
+    top: 50,
     right: 40,
     bottom: 80,
     left: 100
@@ -163,7 +163,7 @@ d3.json("/yeargamedata4").then(function(gameData, err) {
     
     chartGroup.append("text")
         .attr('x',width/2)
-        .attr("y", 0 - (margin.top / 2))
+        .attr("y", 0 - (chartMargin.top / 2))
         .attr("text-anchor", "middle")
         .style("font-size", "16px") 
         .text("Twitch Viewer Ship Activity")
